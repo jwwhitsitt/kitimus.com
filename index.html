@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>KiTiMUS</title>
+
+  <!-- Titan One -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet">
+
+  <!-- Preload mascot frames -->
+  <link rel="preload" as="image" href="/mascots/kitimus/kitimus-squint.png">
+  <link rel="preload" as="image" href="/mascots/kitimus/kitimus-squint-left.png">
+  <link rel="preload" as="image" href="/mascots/kitimus/kitimus-squint-right.png">
+  <link rel="preload" as="image" href="/mascots/kitimus/kitimus-blink.png">
+
+  <style>
+    :root{
+      --bg:#f4f6fb;
+      --text:#0f172a;
+      --btn:#0f172a;
+      --btnText:#ffffff;
+      --card:#ffffff;
+      --shadow:0 10px 30px rgba(15,23,42,.12);
+      --radius:18px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      padding: clamp(14px, 3vw, 28px);
+      gap: clamp(14px, 3vw, 24px);
+    }
+
+    .brand{
+      width:100%;
+      max-width: 980px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding-top: clamp(6px, 2vw, 16px);
+    }
+
+    .brand h1{
+      margin:0;
+      font-family:"Titan One", system-ui, sans-serif;
+      font-size: clamp(44px, 8vw, 86px);
+      letter-spacing: 0.02em;
+      line-height:1;
+    }
+
+    .mascotStage{
+      width:100%;
+      max-width: 980px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(12px, 2.5vw, 20px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* Full-width “banner” feel: big, centered, never overflows */
+    .mascotStage img{
+      width: min(100%, 980px);
+      height: auto;
+      max-height: min(42vh, 420px);
+      object-fit: contain;
+      display:block;
+      user-select:none;
+      pointer-events:none;
+    }
+
+    .actions{
+      width:100%;
+      max-width: 980px;
+      display:flex;
+      justify-content:center;
+      padding-bottom: clamp(16px, 4vw, 40px);
+    }
+
+    .btn{
+      border:0;
+      border-radius: 16px;
+      background: var(--btn);
+      color: var(--btnText);
+      font-weight: 900;
+      font-size: 18px;
+      padding: 16px 22px;
+      box-shadow: 0 10px 20px rgba(0,0,0,.12);
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 220px;
+    }
+    .btn:active{ transform: scale(.99); }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <header class="brand">
+      <h1>KiTiMUS</h1>
+    </header>
+
+    <section class="mascotStage" aria-label="Kitimus silently judging">
+      <img id="kitimusHero" src="/mascots/kitimus/kitimus-squint.png" alt="Kitimus">
+    </section>
+
+    <section class="actions">
+      <a class="btn" href="https://states.kitimus.com" rel="noopener">States</a>
+    </section>
+  </main>
+
+  <script>
+    // Simple idle animation: squint + glance L/R + blink
+    const hero = document.getElementById("kitimusHero");
+    const FRAMES = {
+      squint: "/mascots/kitimus/kitimus-squint.png",
+      left: "/mascots/kitimus/kitimus-squint-left.png",
+      right: "/mascots/kitimus/kitimus-squint-right.png",
+      blink: "/mascots/kitimus/kitimus-blink.png",
+    };
+
+    function setFrame(key){
+      const src = FRAMES[key] || FRAMES.squint;
+      if(hero && hero.getAttribute("src") !== src) hero.setAttribute("src", src);
+    }
+
+    // Start default
+    setFrame("squint");
+
+    // Every ~2.2s do something subtle
+    setInterval(() => {
+      const r = Math.random();
+
+      // blink
+      if(r < 0.22){
+        setFrame("blink");
+        setTimeout(() => setFrame("squint"), 140);
+        return;
+      }
+
+      // glance
+      if(r < 0.62){
+        setFrame(Math.random() < 0.5 ? "left" : "right");
+        setTimeout(() => setFrame("squint"), 220);
+        return;
+      }
+
+      // default squint
+      setFrame("squint");
+    }, 2200);
+
+    // Optional: blink on any tap/click (feels alive)
+    document.addEventListener("pointerdown", () => {
+      setFrame("blink");
+      setTimeout(() => setFrame("squint"), 120);
+    }, { passive:true });
+  </script>
+</body>
+</html>
